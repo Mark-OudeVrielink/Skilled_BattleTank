@@ -2,6 +2,13 @@
 
 #include "TankAIController.h"
 
+ATank* ATankAIController::GetPlayerTank() const
+{
+	auto player = GetWorld()->GetFirstPlayerController()->GetPawn();
+	
+	if (!player) return nullptr;
+	return Cast<ATank>(player);
 
+}
 
 
