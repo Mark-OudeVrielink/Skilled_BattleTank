@@ -3,7 +3,14 @@
 #include "TankBarrel.h"
 
 void UTankBarrel::Elevate(float relativeSpeed) {
-	UE_LOG(LogTemp, Warning, TEXT("aiming at "));
+	relativeSpeed = FMath::Clamp<float>(relativeSpeed, -1, 1);
+
+	auto elevationChange = relativeSpeed * _MaxDegreesPerSecond * GetWorld()->DeltaTimeSeconds;
+	auto rawNewElevation = FMath::Clamp<float>(RelativeRotation.Pitch + elevationChange, _MinElevationDegrees, _MaxElevationDegrees);
+
+	SetRelativeRotation(FRotator(rawNewElevation, 0,0));
+
+	//UE_LOG(LogTemp, Warning, TEXT("aiming at "));
 }
 
 
