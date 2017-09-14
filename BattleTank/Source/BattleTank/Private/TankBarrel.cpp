@@ -2,7 +2,7 @@
 
 #include "TankBarrel.h"
 
-void UTankBarrel::Elevate(float degreesPerSecond) {
+void UTankBarrel::Elevate(float relativeSpeed) {
 	UE_LOG(LogTemp, Warning, TEXT("aiming at "));
 }
 
