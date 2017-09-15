@@ -8,6 +8,7 @@
 
 class UTankBarrel;
 class UTankTurret;
+class AProjectile;
 class UTankAimingComponent;
 
 UCLASS()
@@ -23,6 +24,9 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = Setup)
 	void SetTurret(UTankTurret* turret);
+
+	UFUNCTION(BlueprintCallable, Category = Action)
+	void Fire();
 
 protected:
 	// Called when the game starts or when spawned
@@ -40,4 +44,8 @@ private:
 	UPROPERTY(EditAnywhere, category = Firing)
 	float _launchSpeed = 10000;
 	
+	UPROPERTY(EditAnywhere, Category = Setup)
+	TSubclassOf<AProjectile> _projectileBlueprint;
+
+	UTankBarrel* _barrel = nullptr;
 };
