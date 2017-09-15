@@ -2,6 +2,7 @@
 
 #include "Tank.h"
 #include "TankBarrel.h"
+#include "TankTurret.h"
 #include "TankAimingComponent.h"
 
 
@@ -22,6 +23,10 @@ void ATank::AimAt(FVector hitLocation)
 void ATank::SetBarrel(UTankBarrel * barrel)
 {
 	_tankAimingComponent->SetBarrelReference(barrel);
+}
+
+void ATank::SetTurret(UTankTurret* turret) {
+	_tankAimingComponent->SetTurretReference(turret);
 }
 
 // Called when the game starts or when spawned
