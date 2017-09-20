@@ -9,7 +9,7 @@ void ATankAIController::Tick(float DeltaTime)
 
 	auto player = Cast<ATank>(GetWorld()->GetFirstPlayerController()->GetPawn());
 	auto controlledTank = Cast<ATank>(GetPawn());
-
+	
 	if (player) {
 
 		controlledTank->AimAt(player->GetActorLocation());
