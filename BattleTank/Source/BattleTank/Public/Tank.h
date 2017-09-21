@@ -20,12 +20,6 @@ class BATTLETANK_API ATank : public APawn
 public:	
 	void AimAt(FVector hitLocation);
 
-	UFUNCTION(BlueprintCallable, Category = Setup)
-	void SetBarrel(UTankBarrel* barrel);
-
-	UFUNCTION(BlueprintCallable, Category = Setup)
-	void SetTurret(UTankTurret* turret);
-
 	UFUNCTION(BlueprintCallable, Category = Action)
 	void Fire();
 
@@ -33,6 +27,7 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	UPROPERTY(BlueprintReadOnly)
 	UTankAimingComponent* _tankAimingComponent = nullptr;
 
 	UPROPERTY(BlueprintReadOnly)

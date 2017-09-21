@@ -29,7 +29,8 @@ private:
 	bool GetLookDirection(FVector2D screenLocation, FVector& lookDirection) const;
 	bool GetLookVectorHitLocation(FVector lookDirection, FVector& hitLocation) const;
 
-public:
+protected:
+	UFUNCTION(BlueprintCallable, category = Setup)
 	ATank* GetControlledTank() const;
 	
 	bool GetSightRayHitLocation(FVector& HitLocation) const;
