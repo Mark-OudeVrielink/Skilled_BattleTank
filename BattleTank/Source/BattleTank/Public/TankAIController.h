@@ -15,10 +15,12 @@ class BATTLETANK_API ATankAIController : public AAIController
 	GENERATED_BODY()
 	
 public:
+
+protected:
+	UPROPERTY(EditDefaultsOnly, Category = "Setup")
+	float _acceptanceRadius = 80000.0f;
 	
 private:
 	virtual void Tick(float DeltaTime) override;
 
-	UPROPERTY(EditDefaultsOnly, Category = Setup)
-	float _acceptanceRadius = 300.0f;
 };
