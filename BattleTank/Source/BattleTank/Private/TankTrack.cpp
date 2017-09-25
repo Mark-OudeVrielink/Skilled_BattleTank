@@ -5,15 +5,17 @@
 FVector UTankTrack::SetThrottle(float throttle) {
 	//UE_LOG(LogTemp, Warning, TEXT("Throttle: %f"), throttle);
 
-	return GetForwardVector() * throttle * _maxDrivingforce;
 	
+	//FVector forceApplied = GetForwardVector() * throttle * _maxDrivingforce;
+
 	// Code from Tutorial video that somehow does not want to compile, so I used bp to fix the problem.
 	//auto forceLocation = GetComponentLocation();
-	//auto root = Cast<UDestructibleComponent>(GetOwner()->GetRootComponent());
+	//auto root = Cast<UPrimitiveComponent>(GetOwner()->GetRootComponent());
 		
-	//AddforceAtLocation(forceApplied, forceLocation, FName(NAME_None));
+	//root->AddforceAtLocation(forceApplied, forceLocation);
 	//AddForce(forceApplied);
 	
+	return GetForwardVector() * throttle * _maxDrivingforce;
 }
 
 

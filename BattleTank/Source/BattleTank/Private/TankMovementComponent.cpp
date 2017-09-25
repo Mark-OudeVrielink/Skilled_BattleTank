@@ -3,20 +3,22 @@
 #include "TankMovementComponent.h"
 #include "TankTrack.h"
 
-void UTankMovementComponent::Initialise(UTankTrack* leftTrack, UTankTrack* rightTrack) {
-
-	if (!leftTrack || !rightTrack) { return; }
+void UTankMovementComponent::Initialise(UTankTrack* leftTrack, UTankTrack* rightTrack) {	
 	_leftTrack = leftTrack;
 	_rightTrack = rightTrack;
 }
 
 
 void UTankMovementComponent::IntendMoveForward(float throwAmount) {
+	if (!ensure(_leftTrack || _rightTrack)) { return; }
+
 	_leftTrack->SetThrottle(throwAmount);
 	_rightTrack->SetThrottle(throwAmount);
 }
 
 void UTankMovementComponent::IntendTurnRight(float throwAmount) {
+	if (!ensure(_leftTrack || _rightTrack)) { return; }
+
 	_leftTrack->SetThrottle(throwAmount);
 	_rightTrack->SetThrottle(-throwAmount);
 }
@@ -29,9 +31,7 @@ void UTankMovementComponent::RequestDirectMove(const FVector& MoveVelocity, bool
 
 	float forwardThrow = FVector::DotProduct(tankForward, aiForwardIntention);
 	float rightThrow = FVector::CrossProduct(tankForward, aiForwardIntention).Z;
-
-
+	
 	IntendMoveForward(forwardThrow);
-	IntendTurnRight(rightThrow);
-	//UE_LOG(LogTemp, Warning, TEXT(" vectoring to "));
+	IntendTurnRight(rightThrow);	
 }
