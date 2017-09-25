@@ -11,8 +11,23 @@ UTankAimingComponent::UTankAimingComponent()
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
-
 	// ...
+}
+
+void UTankAimingComponent::BeginPlay() {
+	_lastFireTime = FPlatformTime::Seconds();
+}
+
+void UTankAimingComponent::TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) {
+	if ((FPlatformTime::Seconds() - _lastFireTime) < _reloadTime) {
+		_firingState = EFiringState::Reloading;
+	}
+	else if (BarrelIsMoving()) {
+		_firingState = EFiringState::Aiming;
+	}
+	else {
+		_firingState = EFiringState::Locked;
+	}
 }
 
 void UTankAimingComponent::MoveAim(FVector aimDirection)
@@ -36,22 +51,28 @@ void UTankAimingComponent::AimAt(FVector location)
 	bool gotVelocity = UGameplayStatics::SuggestProjectileVelocity(this, launchVelocity, startLocation, location, _launchSpeed, ESuggestProjVelocityTraceOption::DoNotTrace);
 		
 	if(gotVelocity){		
-		FVector aimDirection = launchVelocity.GetSafeNormal();	
+		_aimDirection = launchVelocity.GetSafeNormal();	
 
-		MoveAim(aimDirection);		
+		MoveAim(_aimDirection);		
 	}	
 }
 
 void UTankAimingComponent::Fire()
 {
-	bool isReloaded = (FPlatformTime::Seconds() - _lastFireTime) > _reloadTime;
+	if (_firingState != EFiringState::Reloading) {
+		if (!ensure(_barrel)) { return; }
+		if (!ensure(_projectileBlueprint)) { return; }
 
-	if (_barrel && isReloaded) {
 		auto projectile = GetWorld()->SpawnActor<AProjectile>(_projectileBlueprint, _barrel->GetSocketLocation(FName("BarrelEnd")), _barrel->GetSocketRotation(FName("BarrelEnd")));
 		projectile->Launch(_launchSpeed);
 
 		_lastFireTime = FPlatformTime::Seconds();
 	}
+}
+
+bool UTankAimingComponent::BarrelIsMoving() {
+	FVector barrelForward = _barrel->GetForwardVector();
+	return !barrelForward.Equals(_aimDirection, 0.5f);
 }
 
 void UTankAimingComponent::Initialise(UTankBarrel* barrelToSet, UTankTurret* turretToSet) {

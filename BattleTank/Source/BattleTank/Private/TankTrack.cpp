@@ -2,20 +2,41 @@
 
 #include "TankTrack.h"
 
-FVector UTankTrack::SetThrottle(float throttle) {
-	//UE_LOG(LogTemp, Warning, TEXT("Throttle: %f"), throttle);
+UTankTrack::UTankTrack() {	
+}
 
-	
-	//FVector forceApplied = GetForwardVector() * throttle * _maxDrivingforce;
+void UTankTrack::BeginPlay() {
+	OnComponentHit.AddDynamic(this, &UTankTrack::OnHit);
+}
 
-	// Code from Tutorial video that somehow does not want to compile, so I used bp to fix the problem.
-	//auto forceLocation = GetComponentLocation();
-	//auto root = Cast<UPrimitiveComponent>(GetOwner()->GetRootComponent());
-		
-	//root->AddforceAtLocation(forceApplied, forceLocation);
-	//AddForce(forceApplied);
-	
-	return GetForwardVector() * throttle * _maxDrivingforce;
+void UTankTrack::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit) {
+	DriveTrack();
+	ApplySidewaysForce();
+	_currentThrottle = 0.0f;
+}
+
+void UTankTrack::ApplySidewaysForce()
+{
+	float slippageSpeed = FVector::DotProduct(GetRightVector(), GetComponentVelocity());
+	auto deltaTime = GetWorld()->GetDeltaSeconds();
+	FVector accelerationCorrection = -slippageSpeed / deltaTime * GetRightVector();
+
+	UStaticMeshComponent* tankRoot = Cast<UStaticMeshComponent>(GetOwner()->GetRootComponent());
+	FVector correctionForce = (tankRoot->GetMass() * accelerationCorrection) / 2;
+
+	tankRoot->AddForce(correctionForce);
+}
+
+void UTankTrack::SetThrottle(float throttle) {
+	_currentThrottle = FMath::Clamp<float>(_currentThrottle + throttle, -1, 1);
+}
+
+void UTankTrack::DriveTrack() {
+	FVector forceApplied = GetForwardVector() * _currentThrottle * _maxDrivingforce;
+	FVector forceLocation = GetComponentLocation();
+	UPrimitiveComponent* tankRoot = Cast<UPrimitiveComponent>(GetOwner()->GetRootComponent());
+
+	tankRoot->AddForceAtLocation(forceApplied, forceLocation);	
 }
 
 
