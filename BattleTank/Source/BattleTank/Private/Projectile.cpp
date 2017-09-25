@@ -2,6 +2,8 @@
 
 #include "Projectile.h"
 #include "GameFramework/ProjectileMovementComponent.h"
+#include "Particles/ParticleSystemComponent.h"
+
 
 // Sets default values
 AProjectile::AProjectile()
@@ -11,6 +13,14 @@ AProjectile::AProjectile()
 
 	_projectileMovement = CreateDefaultSubobject<UProjectileMovementComponent>(FName("Movement Component"));
 	_projectileMovement->bAutoActivate = false;
+
+	_collisionMesh = CreateAbstractDefaultSubobject<UStaticMeshComponent>(FName("Collision Mesh"));
+	SetRootComponent(_collisionMesh);
+	_collisionMesh->SetNotifyRigidBodyCollision(true);
+	_collisionMesh->SetVisibility(false);
+
+	_launchBlast = CreateDefaultSubobject<UParticleSystemComponent>(FName("Launch Blast"));
+	_launchBlast->AttachTo(RootComponent);
 }
 
 // Called when the game starts or when spawned
