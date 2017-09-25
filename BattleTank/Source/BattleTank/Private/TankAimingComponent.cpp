@@ -39,7 +39,13 @@ void UTankAimingComponent::MoveAim(FVector aimDirection)
 	FRotator deltaRotator = aimRotator - barrelRotator;
 
 	_barrel->Elevate(deltaRotator.Pitch);
-	_turret->Rotate(deltaRotator.Yaw);
+	if (FMath::Abs(deltaRotator.Yaw) > 180) {
+		_turret->Rotate(deltaRotator.Yaw);
+	}
+	else {
+		_turret->Rotate(-deltaRotator.Yaw);
+	}
+	
 }
 
 void UTankAimingComponent::AimAt(FVector location)
